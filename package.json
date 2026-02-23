@@ -13,15 +13,18 @@
   },
   "scripts": {
     "format": "prettier . --write",
-    "test": "prettier . --check && lunte && brittle-bare test/all.js"
+    "test": "prettier . --check && lunte && brittle-bare test/all.js",
+    "postinstall": "patch-package"
   },
   "dependencies": {
+    "bare-process": "^4.2.2",
     "compromise": "^14.14.5",
     "coremachine": "^1.0.3"
   },
   "license": "MIT",
   "devDependencies": {
     "brittle": "^3.19.1",
+    "corestore": "^7.8.0",
     "prettier": "^3.8.1",
     "prettier-config-holepunch": "^2.0.0"
   }

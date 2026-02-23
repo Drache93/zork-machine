@@ -62,14 +62,10 @@ node test.js
 
 ```javascript
 import Corestore from 'corestore'
-import { Coremachine, createMachine } from 'coremachine'
-import { createZorkMachine } from './zork-machine.js'
+import { Zork } from './zork-machine.js'
 
-const definition = createZorkMachine(createMachine)
 const store = new Corestore('./zork-save')
-const zork = new Coremachine(store.get({ name: 'zork', valueEncoding: 'json' }), definition, {
-  eager: true
-})
+const zork = Zork(store)
 
 // Write commands in
 zork.write({ action: 'COMMAND', value: { text: 'open mailbox' } })
