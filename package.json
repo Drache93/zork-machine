@@ -1,5 +1,5 @@
 {
-  "name": "zork-coremachine",
+  "name": "zork-machine",
   "version": "1.0.0",
   "description": "Zork I implemented as a streaming state machine using Coremachine",
   "type": "module",
