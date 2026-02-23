@@ -1,6 +1,6 @@
 # Zork Coremachine
 
-Zork I: The Great Underground Empire, reimplemented as a streaming state machine using [Coremachine](https://github.com/mkabanern/coremachine).
+Zork I: The Great Underground Empire, reimplemented as a streaming state machine using [Coremachine](https://github.com/holepunchto/coremachine).
 
 ```
 input stream  →  Coremachine (Zork)  →  output stream
@@ -81,32 +81,6 @@ zork.on('data', ({ state, context }) => {
 inputStream.pipe(zork).pipe(rendererStream)
 ```
 
-## Usage with Cellery
-
-```javascript
-// Input Cell → Zork Machine → Render Cell
-inputCell.pipe(coremachine).pipe(renderCell)
-```
-
-See `cellery-cell.js` for a detailed integration sketch.
-
-## Usage as pure engine (no streams)
-
-```javascript
-import { buildInitialContext, hydrateContext, dispatch } from './zork-machine.js'
-
-const ctx = buildInitialContext()
-hydrateContext(ctx)
-
-const output = dispatch(ctx, 'open mailbox')
-// → "Opening the small mailbox reveals a leaflet."
-
-const output2 = dispatch(ctx, 'take leaflet')
-// → "Taken."
-
-console.log(ctx.inventory) // ['leaflet']
-```
-
 ## Game Content
 
 ### Rooms (~40 rooms)
@@ -141,10 +115,6 @@ zork-machine/
 ├── items.js               # Item definitions (properties, handlers, treasures)
 ├── parser.js              # Natural language command parser
 ├── engine.js              # Game logic (movement, items, combat, etc.)
-├── example-coremachine.js # Full Coremachine + Hypercore example
-├── example-pipeline.js    # Pure streaming pipeline (no Hypercore)
-├── cellery-cell.js        # Cellery Cell integration sketch
-├── test.js                # Test suite + demo walkthrough
 └── package.json
 ```
 
@@ -202,10 +172,6 @@ Items can have handler functions for any verb:
   }
 }
 ```
-
-## Serialization Note
-
-Coremachine persists state to Hypercore as JSON. Since JSON strips functions, the engine re-attaches handler functions from the item/room definitions via `hydrateContext()` on every action. This means the game data definitions are the source of truth for behavior, while Hypercore stores the mutable state (positions, flags, inventory, etc.).
 
 ## License
 
