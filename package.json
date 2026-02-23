@@ -25,6 +25,7 @@
   "devDependencies": {
     "brittle": "^3.19.1",
     "corestore": "^7.8.0",
+    "patch-package": "^8.0.1",
     "prettier": "^3.8.1",
     "prettier-config-holepunch": "^2.0.0"
   }
