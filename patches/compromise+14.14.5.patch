@@ -1,3 +1,20 @@
+diff --git a/node_modules/compromise/package.json b/node_modules/compromise/package.json
+index 637dbcc..85f1a5f 100644
+--- a/node_modules/compromise/package.json
++++ b/node_modules/compromise/package.json
+@@ -9,6 +9,12 @@
+   "type": "module",
+   "sideEffects": false,
+   "types": "./types/three.d.ts",
++  "imports": {
++    "process": {
++      "bare": "bare-process",
++      "default": "process"
++    }
++  },
+   "exports": {
+     ".": {
+       "import": {
 diff --git a/node_modules/compromise/src/1-one/sweep/methods/tagger/index.js b/node_modules/compromise/src/1-one/sweep/methods/tagger/index.js
 index 7865069..02511a1 100644
 --- a/node_modules/compromise/src/1-one/sweep/methods/tagger/index.js
