@@ -1,6 +1,6 @@
 {
   "name": "zork-machine",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Zork I implemented as a streaming state machine using Coremachine",
   "type": "module",
   "main": "zork-machine.js",
