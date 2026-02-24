@@ -84,12 +84,15 @@ export function handleMove(ctx, direction) {
 export function arriveAt(ctx, exitTarget) {
   const previousRoom = ctx.currentRoom
 
+  // Clear stale output from previous turn
+  ctx.output = null
+
   // Handle dark room movement (chance of grue)
   if (isDark(ctx) && rooms[exitTarget]?.dark) {
     ctx.darkMoves = (ctx.darkMoves || 0) + 1
     if (ctx.darkMoves >= 3 && Math.random() < 0.4) {
       ctx.health = 0
-      return DARK_MOVE_DEATH
+      return { location: null, warnings: [], text: DARK_MOVE_DEATH }
     }
   } else {
     ctx.darkMoves = 0
@@ -101,15 +104,17 @@ export function arriveAt(ctx, exitTarget) {
   ctx.currentRoom = exitTarget
   ctx.moves++
 
+  const warnings = []
+
   // Tick lantern
   if (ctx.items['lantern'].on) {
     ctx.items['lantern'].turnsRemaining--
     if (ctx.items['lantern'].turnsRemaining === 20) {
-      ctx.output = 'Your lantern is getting dim. You should find a way to conserve it.\n\n'
+      warnings.push('Your lantern is getting dim. You should find a way to conserve it.')
     }
     if (ctx.items['lantern'].turnsRemaining <= 0) {
       ctx.items['lantern'].on = false
-      ctx.output = (ctx.output || '') + 'Your lantern has run out of power.\n\n'
+      warnings.push('Your lantern has run out of power.')
     }
   }
 
@@ -120,7 +125,7 @@ export function arriveAt(ctx, exitTarget) {
     )
     ctx.items['sword'].glowing = hasEnemy
     if (hasEnemy) {
-      ctx.output = (ctx.output || '') + 'Your sword is glowing with a faint blue glow.\n\n'
+      warnings.push('Your sword is glowing with a faint blue glow.')
     }
   }
 
@@ -136,14 +141,13 @@ export function arriveAt(ctx, exitTarget) {
     ctx.score += 1
   }
 
-  // Build output
-  const header = rooms[exitTarget]?.name || exitTarget
-  let output = (ctx.output || '') + header + '\n'
-  if (enterMsg) output += enterMsg + '\n'
-  output += describeRoom(ctx)
+  // Build structured output
+  const location = rooms[exitTarget]?.name || exitTarget
+  let text = ''
+  if (enterMsg) text += enterMsg + '\n'
+  text += describeRoom(ctx)
 
-  ctx.output = ''
-  return output
+  return { location, warnings, text }
 }
 
 // ============================================================

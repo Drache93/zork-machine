@@ -8,7 +8,7 @@ test('works', async (t) => {
 
   zork.on('data', ({ state, context }) => {
     t.is(state, 'west-of-house')
-    t.is(context.output, 'Opening the small mailbox reveals a leaflet.')
+    t.is(context.output.text, 'Opening the small mailbox reveals a leaflet.')
     t.is(context.score, 0)
     t.alike(context.inventory, [])
   })

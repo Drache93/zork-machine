@@ -49,7 +49,7 @@ export function buildInitialContext() {
     moves: 0,
     darkMoves: 0,
     visitedRooms: ['west-of-house'],
-    output: '',
+    output: null,
     gameOver: false,
     won: false,
     lastCommand: null
@@ -73,7 +73,7 @@ function buildRoomStates() {
         on[event] = {
           target: roomId,
           action(ctx) {
-            ctx.output = "You can't go that way."
+            ctx.output = { location: null, warnings: [], text: "You can't go that way." }
           }
         }
       } else if (guarded) {
@@ -86,7 +86,7 @@ function buildRoomStates() {
               ctx.output = engine.arriveAt(ctx, target)
             } else {
               ctx.currentRoom = from // reset — guard failed
-              ctx.output = guarded.blocked
+              ctx.output = { location: null, warnings: [], text: guarded.blocked }
             }
           }
         }
@@ -110,11 +110,13 @@ function buildRoomStates() {
         target: 'west-of-house',
         action(ctx) {
           Object.assign(ctx, buildInitialContext())
-          ctx.output =
-            'ZORK I: The Great Underground Empire\nCopyright (c) 1981, 1982, 1983 Infocom, Inc.\n(Coremachine Edition)\n\n' +
-            rooms['west-of-house'].name +
-            '\n' +
-            rooms['west-of-house'].description
+          ctx.output = {
+            location: rooms['west-of-house'].name,
+            warnings: [],
+            text:
+              'ZORK I: The Great Underground Empire\nCopyright (c) 1981, 1982, 1983 Infocom, Inc.\n(Coremachine Edition)\n\n' +
+              rooms['west-of-house'].description
+          }
         }
       }
     }
@@ -126,11 +128,11 @@ function buildRoomStates() {
         target: 'west-of-house',
         action(ctx) {
           Object.assign(ctx, buildInitialContext())
-          ctx.output =
-            'Starting a new game...\n\n' +
-            rooms['west-of-house'].name +
-            '\n' +
-            rooms['west-of-house'].description
+          ctx.output = {
+            location: rooms['west-of-house'].name,
+            warnings: [],
+            text: 'Starting a new game...\n\n' + rooms['west-of-house'].description
+          }
         }
       }
     }
@@ -151,223 +153,303 @@ export function createZorkMachine() {
       all: {
         look: {
           action(ctx) {
-            ctx.output = rooms[ctx.currentRoom].name + '\n' + engine.describeRoom(ctx, true)
+            ctx.output = {
+              location: rooms[ctx.currentRoom].name,
+              warnings: [],
+              text: engine.describeRoom(ctx, true)
+            }
           }
         },
 
         examine: {
           action(ctx, p) {
-            ctx.output = engine.handleExamine(ctx, p && p.noun)
+            ctx.output = {
+              location: null,
+              warnings: [],
+              text: engine.handleExamine(ctx, p && p.noun)
+            }
           }
         },
 
         read: {
           action(ctx, p) {
-            ctx.output = engine.handleRead(ctx, p && p.noun)
+            ctx.output = { location: null, warnings: [], text: engine.handleRead(ctx, p && p.noun) }
           }
         },
 
         search: {
           action(ctx, p) {
-            ctx.output = engine.handleSearch(ctx, p && p.noun)
+            ctx.output = {
+              location: null,
+              warnings: [],
+              text: engine.handleSearch(ctx, p && p.noun)
+            }
           }
         },
 
         take: {
           action(ctx, p) {
-            ctx.output = engine.handleTake(ctx, p && p.noun)
+            ctx.output = { location: null, warnings: [], text: engine.handleTake(ctx, p && p.noun) }
           }
         },
 
         drop: {
           action(ctx, p) {
-            ctx.output = engine.handleDrop(ctx, p && p.noun)
+            ctx.output = { location: null, warnings: [], text: engine.handleDrop(ctx, p && p.noun) }
           }
         },
 
         inventory: {
           action(ctx) {
-            ctx.output = engine.handleInventory(ctx)
+            ctx.output = { location: null, warnings: [], text: engine.handleInventory(ctx) }
           }
         },
 
         put: {
           action(ctx, p) {
-            ctx.output = engine.handlePut(ctx, p && p.noun, p && p.indirect)
+            ctx.output = {
+              location: null,
+              warnings: [],
+              text: engine.handlePut(ctx, p && p.noun, p && p.indirect)
+            }
           }
         },
 
         throw: {
           action(ctx, p) {
-            ctx.output = engine.handleThrow(ctx, p && p.noun)
+            ctx.output = {
+              location: null,
+              warnings: [],
+              text: engine.handleThrow(ctx, p && p.noun)
+            }
           }
         },
 
         open: {
           action(ctx, p) {
-            ctx.output = engine.handleOpen(ctx, p && p.noun)
+            ctx.output = { location: null, warnings: [], text: engine.handleOpen(ctx, p && p.noun) }
           }
         },
 
         close: {
           action(ctx, p) {
-            ctx.output = engine.handleClose(ctx, p && p.noun)
+            ctx.output = {
+              location: null,
+              warnings: [],
+              text: engine.handleClose(ctx, p && p.noun)
+            }
           }
         },
 
         turn_on: {
           action(ctx, p) {
-            ctx.output = engine.handleTurnOn(ctx, p && p.noun)
+            ctx.output = {
+              location: null,
+              warnings: [],
+              text: engine.handleTurnOn(ctx, p && p.noun)
+            }
           }
         },
 
         turn_off: {
           action(ctx, p) {
-            ctx.output = engine.handleTurnOff(ctx, p && p.noun)
+            ctx.output = {
+              location: null,
+              warnings: [],
+              text: engine.handleTurnOff(ctx, p && p.noun)
+            }
           }
         },
 
         move_item: {
           action(ctx, p) {
-            ctx.output = engine.handleMoveItem(ctx, p && p.noun)
+            ctx.output = {
+              location: null,
+              warnings: [],
+              text: engine.handleMoveItem(ctx, p && p.noun)
+            }
           }
         },
 
         unlock: {
           action(ctx, p) {
-            ctx.output = engine.handleUnlock(ctx, p && p.noun, p && p.indirect)
+            ctx.output = {
+              location: null,
+              warnings: [],
+              text: engine.handleUnlock(ctx, p && p.noun, p && p.indirect)
+            }
           }
         },
 
         lock: {
           action(ctx) {
-            ctx.output = "You don't have the ability to lock that."
+            ctx.output = {
+              location: null,
+              warnings: [],
+              text: "You don't have the ability to lock that."
+            }
           }
         },
 
         light: {
           action(ctx, p) {
-            ctx.output = engine.handleLight(ctx, p && p.noun)
+            ctx.output = {
+              location: null,
+              warnings: [],
+              text: engine.handleLight(ctx, p && p.noun)
+            }
           }
         },
 
         inflate: {
           action(ctx, p) {
-            ctx.output = engine.handleInflate(ctx, p && p.noun)
+            ctx.output = {
+              location: null,
+              warnings: [],
+              text: engine.handleInflate(ctx, p && p.noun)
+            }
           }
         },
 
         ring: {
           action(ctx, p) {
-            ctx.output = engine.handleRing(ctx, p && p.noun)
+            ctx.output = { location: null, warnings: [], text: engine.handleRing(ctx, p && p.noun) }
           }
         },
 
         eat: {
           action(ctx, p) {
-            ctx.output = engine.handleEat(ctx, p && p.noun)
+            ctx.output = { location: null, warnings: [], text: engine.handleEat(ctx, p && p.noun) }
           }
         },
 
         drink: {
           action(ctx) {
-            ctx.output = "You take a drink. It's refreshing."
+            ctx.output = {
+              location: null,
+              warnings: [],
+              text: "You take a drink. It's refreshing."
+            }
           }
         },
 
         use: {
           action(ctx, p) {
-            ctx.output = engine.handleUse(ctx, p && p.noun, p && p.indirect)
+            ctx.output = {
+              location: null,
+              warnings: [],
+              text: engine.handleUse(ctx, p && p.noun, p && p.indirect)
+            }
           }
         },
 
         wave: {
           action(ctx, p) {
-            ctx.output = engine.handleWave(ctx, p && p.noun)
+            ctx.output = { location: null, warnings: [], text: engine.handleWave(ctx, p && p.noun) }
           }
         },
 
         attack: {
           action(ctx, p) {
-            ctx.output = engine.handleAttack(ctx, p && p.noun, p && p.indirect)
+            ctx.output = {
+              location: null,
+              warnings: [],
+              text: engine.handleAttack(ctx, p && p.noun, p && p.indirect)
+            }
           }
         },
 
         climb: {
           action(ctx, p) {
-            ctx.output = engine.handleClimb(ctx, p && p.noun)
+            ctx.output = {
+              location: null,
+              warnings: [],
+              text: engine.handleClimb(ctx, p && p.noun)
+            }
           }
         },
 
         score: {
           action(ctx) {
-            ctx.output = engine.handleScore(ctx)
+            ctx.output = { location: null, warnings: [], text: engine.handleScore(ctx) }
           }
         },
 
         wait: {
           action(ctx) {
-            ctx.output = engine.handleWait()
+            ctx.output = { location: null, warnings: [], text: engine.handleWait() }
           }
         },
 
         diagnose: {
           action(ctx) {
-            ctx.output = engine.handleDiagnose(ctx)
+            ctx.output = { location: null, warnings: [], text: engine.handleDiagnose(ctx) }
           }
         },
 
         help: {
           action(ctx) {
-            ctx.output = engine.handleHelp()
+            ctx.output = { location: null, warnings: [], text: engine.handleHelp() }
           }
         },
 
         hello: {
           action(ctx) {
-            ctx.output = engine.handleHello()
+            ctx.output = { location: null, warnings: [], text: engine.handleHello() }
           }
         },
 
         shout: {
           action(ctx) {
-            ctx.output = engine.handleShout()
+            ctx.output = { location: null, warnings: [], text: engine.handleShout() }
           }
         },
 
         pray: {
           action(ctx) {
-            ctx.output = engine.handlePray(ctx)
+            ctx.output = { location: null, warnings: [], text: engine.handlePray(ctx) }
           }
         },
 
         xyzzy: {
           action(ctx) {
-            ctx.output = engine.handleXyzzy()
+            ctx.output = { location: null, warnings: [], text: engine.handleXyzzy() }
           }
         },
 
         plugh: {
           action(ctx) {
-            ctx.output = engine.handlePlugh()
+            ctx.output = { location: null, warnings: [], text: engine.handlePlugh() }
           }
         },
 
         save: {
           action(ctx) {
-            ctx.output = 'Game state is automatically saved to Hypercore after every action.'
+            ctx.output = {
+              location: null,
+              warnings: [],
+              text: 'Game state is automatically saved to Hypercore after every action.'
+            }
           }
         },
 
         restore: {
           action(ctx) {
-            ctx.output = 'Use coremachine.backward() to step back through history.'
+            ctx.output = {
+              location: null,
+              warnings: [],
+              text: 'Use coremachine.backward() to step back through history.'
+            }
           }
         },
 
         quit: {
           action(ctx) {
-            ctx.output = engine.handleScore(ctx) + '\nThank you for playing ZORK!'
+            ctx.output = {
+              location: null,
+              warnings: [],
+              text: engine.handleScore(ctx) + '\nThank you for playing ZORK!'
+            }
           }
         },
 
@@ -379,7 +461,7 @@ export function createZorkMachine() {
             const text = typeof payload === 'string' ? payload : payload && payload.text
             const cmd = parse(text)
             if (!cmd) {
-              ctx.output = 'I beg your pardon?'
+              ctx.output = { location: null, warnings: [], text: 'I beg your pardon?' }
               return
             }
             ctx.moves++
@@ -387,10 +469,15 @@ export function createZorkMachine() {
 
             switch (cmd.verb) {
               case 'go':
+                // handleMove returns structured object (via arriveAt) or plain string (error)
                 ctx.output = engine.handleMove(ctx, cmd.noun)
                 break
               case 'look':
-                ctx.output = rooms[ctx.currentRoom].name + '\n' + engine.describeRoom(ctx, true)
+                ctx.output = {
+                  location: rooms[ctx.currentRoom].name,
+                  warnings: [],
+                  text: engine.describeRoom(ctx, true)
+                }
                 break
               case 'examine':
                 ctx.output = engine.handleExamine(ctx, cmd.noun)
@@ -504,10 +591,15 @@ export function createZorkMachine() {
                 ctx.output = "I don't understand that command. Type HELP for a list of commands."
             }
 
+            // Normalize string output to structured object
+            if (typeof ctx.output === 'string') {
+              ctx.output = { location: null, warnings: [], text: ctx.output }
+            }
+
             if (ctx.health <= 0) {
               ctx.gameOver = true
-              ctx.output +=
-                '\n\n    **** You have died ****\n\nYour score is ' +
+              ctx.output.death =
+                '    **** You have died ****\n\nYour score is ' +
                 ctx.score +
                 ' out of 350, in ' +
                 ctx.moves +
