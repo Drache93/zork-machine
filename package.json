@@ -19,7 +19,7 @@
   "dependencies": {
     "bare-process": "^4.2.2",
     "compromise": "^14.14.5",
-    "coremachine": "^1.0.3"
+    "coremachine": "^1.0.4"
   },
   "license": "MIT",
   "devDependencies": {
