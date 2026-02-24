@@ -38,21 +38,24 @@ export function describeRoom(ctx, verbose) {
   const roomDef = rooms[ctx.currentRoom]
   if (!roomDef) return 'You are in an unknown place.'
 
-  // Check for custom onLook
+  // Check for custom onLook — if it returns a string, it handles item descriptions itself
   const custom = roomDef.onLook?.(ctx)
   let desc = custom || roomDef.description
 
-  // Add room items (only visible ones, excluding fixed room fixtures already in description)
-  const roomItems = ctx.rooms[ctx.currentRoom].items || []
-  const itemDescs = []
-  for (const itemId of roomItems) {
-    const itemDef = ctx.items[itemId]
-    if (itemDef && !itemDef.fixed && itemDef.description) {
-      itemDescs.push(itemDef.description)
+  // Add room items (only visible ones, excluding fixed room fixtures)
+  // Skip when onLook provided a custom description — it handles items contextually
+  if (!custom) {
+    const roomItems = ctx.rooms[ctx.currentRoom].items || []
+    const itemDescs = []
+    for (const itemId of roomItems) {
+      const itemDef = ctx.items[itemId]
+      if (itemDef && !itemDef.fixed && itemDef.description) {
+        itemDescs.push(itemDef.description)
+      }
     }
-  }
-  if (itemDescs.length > 0) {
-    desc += '\n' + itemDescs.join('\n')
+    if (itemDescs.length > 0) {
+      desc += '\n' + itemDescs.join('\n')
+    }
   }
 
   return desc

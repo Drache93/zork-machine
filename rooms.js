@@ -93,7 +93,7 @@ export const rooms = {
   'living-room': {
     name: 'Living Room',
     description:
-      'You are in the living room. There is a doorway to the east, and a wooden door with strange gothic lettering to the west, which appears to be nailed shut. Above the trophy case hangs an elvish sword of great antiquity. A battery-powered brass lantern is on the trophy case.',
+      'You are in the living room. There is a doorway to the east, and a wooden door with strange gothic lettering to the west, which appears to be nailed shut.',
     exits: {
       east: 'kitchen',
       west: null, // nailed shut
@@ -101,10 +101,19 @@ export const rooms = {
     },
     items: ['sword', 'lantern', 'trophy-case'],
     onLook: (ctx) => {
+      let desc =
+        'You are in the living room. There is a doorway to the east, a wooden door with strange gothic lettering to the west, which appears to be nailed shut, a trophy case, and a large oriental rug in the center of the room.'
       if (ctx.flags.rugMoved) {
-        return 'You are in the living room. There is a doorway to the east. A wooden door with strange gothic lettering to the west appears nailed shut. With the rug moved aside, a trap door is revealed in the floor. Above the trophy case hangs an elvish sword of great antiquity.'
+        desc += ' With the rug moved aside, a trap door is revealed in the floor.'
       }
-      return null
+      const roomItems = ctx.rooms['living-room'].items
+      if (roomItems.includes('sword')) {
+        desc += ' Above the trophy case hangs an elvish sword of great antiquity.'
+      }
+      if (roomItems.includes('lantern')) {
+        desc += ' A battery-powered brass lantern is on the trophy case.'
+      }
+      return desc
     }
   },
 
