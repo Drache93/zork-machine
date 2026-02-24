@@ -25,7 +25,6 @@ export const DIRECTION_ALIASES = {
   southwest: 'southwest',
   up: 'up',
   down: 'down',
-  climb: 'up',
   descend: 'down'
 }
 

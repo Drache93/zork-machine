@@ -66,6 +66,12 @@ export function handleMove(ctx, direction) {
   const roomDef = rooms[ctx.currentRoom]
   if (!roomDef) return "You can't go anywhere from here."
 
+  // "enter window" / "go window" → use the actual exit direction
+  if (direction === 'kitchen-window' || direction === 'window') {
+    if (ctx.currentRoom === 'behind-house') direction = 'west'
+    else if (ctx.currentRoom === 'kitchen') direction = 'east'
+  }
+
   // Check for exit
   const exitTarget = roomDef.exits[direction]
   if (exitTarget === undefined || exitTarget === null) {
@@ -493,14 +499,27 @@ export function handleSearch(ctx, itemId) {
 }
 
 export function handleClimb(ctx, target) {
-  // "climb tree" in forest-path
+  // "climb down" / "climb up" — respect the direction
+  if (target === 'down' || target === 'descend') return handleMove(ctx, 'down')
+  if (target === 'up' || target === 'ascend') return handleMove(ctx, 'up')
+
+  // "climb tree" — context-sensitive
   if (target === 'tree' || target === 'branches') {
-    if (ctx.currentRoom === 'forest-path') {
-      return handleMove(ctx, 'up')
-    }
+    if (ctx.currentRoom === 'forest-path') return handleMove(ctx, 'up')
+    if (ctx.currentRoom === 'up-a-tree') return "You cannot reach the next branch."
     return 'There is no tree to climb here.'
   }
-  // General climb = go up
+
+  // "climb window" / "climb through window" at behind-house or kitchen
+  if (target === 'kitchen-window' || target === 'window') {
+    if (ctx.currentRoom === 'behind-house') return handleMove(ctx, 'west')
+    if (ctx.currentRoom === 'kitchen') return handleMove(ctx, 'east')
+    return "You can't climb through that here."
+  }
+
+  // General climb — if only down exists (e.g. up-a-tree), go down; otherwise up
+  const roomDef = rooms[ctx.currentRoom]
+  if (roomDef?.exits.down && !roomDef?.exits.up) return handleMove(ctx, 'down')
   return handleMove(ctx, 'up')
 }
 
